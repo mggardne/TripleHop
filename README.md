@@ -5,6 +5,6 @@ Analyzes JPEG images of triple hop biplanar images in three different poses:  1.
 
 File names must be in a specific format.  See comment above the file read for the JPEG image files.
 
-The frontal (F) and lateral (L) camera views are sychronized.  The reflective marker balls are listed in the comments.  Only the markers required to calculate the joint angles are digitized in each view.
+The frontal (F) and lateral (L) camera views are sychronized.  The reflective marker balls are listed in the comments about radio buttons.  Only the markers required to calculate the joint angles are digitized in each view.  The joints angles are described in the comments after the names of the radio buttons.
 
-See thop_angg.m comments for more information about using this code.
+Please see the comments in thop_angg.m for more information.
