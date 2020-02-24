@@ -22,6 +22,10 @@
 %             4.  MS-Excel spreadsheet thop_ang.xlsx must not be open
 %             when running this program.
 %
+%             5.  Note the joint angles are the interior angles between
+%             the body segments and are not clinical joint angles which
+%             have variously defined zero angles.
+%
 %     20-Feb-2020 * Mack Gardner-Morse
 %
 
