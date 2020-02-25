@@ -92,19 +92,19 @@ drawnow;
 %
 % Setup Slider for Brightness
 %
-hs = uicontrol(hf1,'Style','slider');
-set(gca,'Units','pixels');
-pos = reshape(round(get(gca,'pos')),2,2)';
+hs = uicontrol(hf1,'Style','slider','String','Brightness');
+set(hf1,'Units','pixels');
+pos = reshape(round(get(hf1,'pos')),2,2)';
 ci = ['val = get(hs,''Value''); imgb = im_dat+uint8(val); ' ...
       'set(ih,''CData'',imgb);'];
-set(hs,'Position',[20 pos(1,2)+20 20 pos(4)-40],'Min',0, ...
-    'Max',128,'Value',0,'Callback',ci);
+set(hs,'Position',[pos(1)+50 pos(1,2)+25 20 pos(4)-pos(1,2)-45], ...
+    'Min',0,'Max',128,'Value',0,'Callback',ci);
 set(hs,'BackgroundColor',[0.85 0.85 0.85]);
 %
 % Setup Radio Buttons
 %
-rpos = round((pos(4)-6*100)/2);
-xy = [sum(pos(:,1))+10 sum(pos(:,2))-rpos];
+rpos = round(((pos(4)-pos(1,2))-6*100)/2);
+xy = [sum(pos(:,1))-120 pos(4)-rpos];
 %
 % Frontal Points:
 %
@@ -196,7 +196,7 @@ hb7 = uicontrol('Style','radiobutton','String', 'LM',...
 % Next Plot Push Button
 %
 hb = uicontrol('Style', 'pushbutton', 'String', 'Close',...
-               'Position', [20 20 50 20],'Callback',@nextplt);
+               'Position', [50 25 75 25],'Callback',@nextplt);
 %
 % Loop through Hop Files
 %
@@ -224,12 +224,12 @@ for k = 1:nf
 % Frontal View
 %
    if startsWith(iview,'F')
-     for k = 1:7
-        eval(['set(hb' int2str(k) ',''String'',' ' fpts{k} ' ');']);
+     for l = 1:7
+        eval(['set(hb' int2str(l) ',''String'',' ' fpts{l} ' ');']);
      end
 %
-     for k = [2:4 6]
-        eval(['set(hb' int2str(k) ',''Enable'',''off'');']);
+     for l = [2:4 6]
+        eval(['set(hb' int2str(l) ',''Enable'',''off'');']);
      end
 %
      uiwait(hf1);
@@ -248,9 +248,9 @@ for k = 1:nf
 % Lateral View
 %
    else
-     for k = 1:7
-        eval(['set(hb' int2str(k) ',''String'',' ' lpts{k} ' ');' ]);
-        eval(['set(hb' int2str(k) ',''Enable'',''on'');']);
+     for l = 1:7
+        eval(['set(hb' int2str(l) ',''String'',' ' lpts{l} ' ');' ]);
+        eval(['set(hb' int2str(l) ',''Enable'',''on'');']);
      end
      set(hb4,'Enable','off');
 %
@@ -306,7 +306,7 @@ close(hf1);
 %
 return
 %
-function btnstate(source,event);
+function btnstate(source,~)
 %BTNSTATE  Callback function for radio buttons for digitizing points on
 %          triple hop images.
 %
@@ -345,7 +345,7 @@ if val
   eval(['hmt' sbtn ' = text(px+1,py+1,mstr,''Color'',''r'',', ...
         '''FontSize'',10,''FontWeight'',''bold'');']);
 else
-  if exist(['hm' sbtn],'var');
+  if exist(['hm' sbtn],'var')
     eval(['delete(hm' sbtn ');']);
     eval(['delete(hmt' sbtn ');']);
   end
@@ -353,7 +353,7 @@ end
 %
 end
 %
-function nextplt(source,event);
+function nextplt(~,~)
 %NEXTPLT   Callback function for push button for digitizing points on
 %          triple hop images.
 %
@@ -378,12 +378,12 @@ global x1 x2 x3 x4 x5 x6 x7 y1 y2 y3 y4 y5 y6 y7;
 for k = 1:7
    ks = int2str(k);     % Button and plot number as a string
    hmk = ['hm' ks];
-   if exist(hmk,'var');
+   if exist(hmk,'var')
      if isnumeric(eval(hmk))
        eval(['x' ks ' = NaN;']);
        eval(['y' ks ' = NaN;']);
      else
-       if isvalid(eval(hmk));
+       if isvalid(eval(hmk))
          eval(['x' ks ' = get(hm' ks ',', ...
                '''XData'');']);
          eval(['y' ks ' = get(hm' ks ',', ...
@@ -406,7 +406,7 @@ uiresume(gcbf);
 %
 end
 %
-function [subj,ileg,itest,iview,trial] = pars_nam(jpg_nam);
+function [subj,ileg,itest,iview,trial] = pars_nam(jpg_nam)
 %PARS_NAM  Function to parse the JPEG image name into subject number ID,
 %          test leg (L/R), test type (C/F/I), image view (F/L) and trial
 %          number.
@@ -443,13 +443,13 @@ idx = strfind(jpg_nam,'_');
 subj = jpg_nam(1:idx(1)-1);
 ileg = upper(jpg_nam(idx(1)+1));
 itest = upper(jpg_nam(idx(2)+1));
-if startsWith(itest,'C');
+if startsWith(itest,'C')
   iview = upper(jpg_nam(idx(3)+1));
   trial = 0;
 else
   iview = itest;
   itest = upper(jpg_nam(idx(3)-1));
-  trial = str2num(jpg_nam(idx(3)+1));
+  trial = str2double(jpg_nam(idx(3)+1));
 end
 %
 end
