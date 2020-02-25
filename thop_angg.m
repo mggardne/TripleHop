@@ -285,7 +285,6 @@ for k = 1:nf
      ankle_ang = rad2deg(acos(dot(mvec,tvec)));
 %
      adata = [trial knee_ang hip_ang ankle_ang];
-     ta = table(adata);
 %
    end
 %
@@ -295,6 +294,7 @@ for k = 1:nf
 %    xlswrite(xlsnam,adata,shtnam,['F' int2str(irow)]);
    writetable(ti,xlsnam,'Sheet',shtnam,'Range',['A', ...
               int2str(irow)],'WriteVariableNames',false);
+   ta = table(adata);
    writetable(ta,xlsnam,'Sheet',shtnam,'Range',['F', ...
               int2str(irow)],'WriteVariableNames',false);
 
