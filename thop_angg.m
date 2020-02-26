@@ -47,7 +47,7 @@ if exist(xlsnam,'file')
   irow = size(txt,1)+1; % First blank line in spreadsheet file
 else
   irow = 1;
-  hdr1 = {'File','Subj','Leg','Test','View','Trial', ...
+  hdr1 = {'File','Date','Time','Subj','Leg','Test','View','Trial', ...
           'Knee Ang','Hip Ang','Ankle Ang'};
 %   xlswrite(xlsnam,hdr1,shtnam,['A' int2str(irow)]);
   th = table(hdr1);
@@ -198,6 +198,10 @@ hb7 = uicontrol('Style','radiobutton','String', 'LM',...
 hb = uicontrol('Style', 'pushbutton', 'String', 'Close',...
                'Position', [50 25 75 25],'Callback',@nextplt);
 %
+% Get Date
+%
+day = date;             % Current date
+%
 % Loop through Hop Files
 %
 for k = 1:nf
@@ -206,7 +210,8 @@ for k = 1:nf
 %
    fnam = fnams{k};
    [subj,ileg,itest,iview,trial] = pars_nam(fnam);
-   idata = {fnam,subj,ileg,itest,iview};
+   t = datestr(now,13);                % Get the current time
+   idata = {fnam,day,t,subj,ileg,itest,iview};
    ti = table(idata);
 %
 % Plot Image
@@ -291,11 +296,11 @@ for k = 1:nf
 % Write Angles Out to Spreadsheet
 %
 %    xlswrite(xlsnam,idata,shtnam,['A' int2str(irow)]);
-%    xlswrite(xlsnam,adata,shtnam,['F' int2str(irow)]);
+%    xlswrite(xlsnam,adata,shtnam,['H' int2str(irow)]);
    writetable(ti,xlsnam,'Sheet',shtnam,'Range',['A', ...
               int2str(irow)],'WriteVariableNames',false);
    ta = table(adata);
-   writetable(ta,xlsnam,'Sheet',shtnam,'Range',['F', ...
+   writetable(ta,xlsnam,'Sheet',shtnam,'Range',['H', ...
               int2str(irow)],'WriteVariableNames',false);
 
    irow = irow+1;
