@@ -88,6 +88,7 @@ nf = size(fnams,1);
 hf1 = figure;
 orient landscape;
 set(hf1,'WindowState','maximized');
+pause(0.5);
 drawnow;
 %
 % Setup Slider for Brightness
