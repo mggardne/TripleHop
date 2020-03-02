@@ -22,7 +22,12 @@
 %             4.  MS-Excel spreadsheet thop_ang.xlsx must not be open
 %             when running this program.
 %
-%             5.  Note the joint angles are the interior angles between
+%             5.  On a Mac, the program assumes the angle results are
+%             in the first sheet of the spreadsheet or if the first
+%             does not contain any text data, assumes the angle results
+%             are in the fourth sheet.
+%
+%             6.  Note the joint angles are the interior angles between
 %             the body segments and are not clinical joint angles which
 %             have variously defined zero angles.
 %
@@ -43,8 +48,17 @@ xlsnam = 'thop_ang.xlsx';
 shtnam = '3hop';
 %
 if exist(xlsnam,'file')
-  [~,txt] = xlsread(xlsnam,shtnam);
-  irow = size(txt,1)+1; % First blank line in spreadsheet file
+  if ismac
+    [~,txt] = xlsread(xlsnam);         % Read first sheet
+    irow = size(txt,1)+1;
+    if irow<2           % Check to be sure it's not a blank sheet
+      [~,txt] = xlsread(xlsnam,4);     % Assume 3hop is fourth sheet
+      irow = size(txt,1)+1;
+    end    
+  else
+    [~,txt] = xlsread(xlsnam,shtnam);
+    irow = size(txt,1)+1;    % First blank line in spreadsheet file
+  end
 else
   irow = 1;
   hdr1 = {'File','Date','Time','Subj','Leg','Test','View','Trial', ...
@@ -64,11 +78,12 @@ end
 % FI= Frontal Impact
 % FF= Frontal Flexion
 %
-[fnams,pnam] = uigetfile({'*.jpe*;*.jpg*', ...
-             'JPEG image files (*.jpe*, *.jpg*)';
-             '*.jpe*;*.jpg*;*.tif*;*.gif*;*.bmp*', ...
-             'All image files (*.jpe*, *.jpg*, *.tif*, *.gif*, *.bmp*)';
-             '*.*',  'All files (*.*)'},'Please Select Image Files', ...
+[fnams,pnam] = uigetfile({'*.png;*.PNG', ...
+             'PNG image files (*.png, *.PNG)'; ...
+             '*.png;*.PNG;*.jpe*;*.jpg*;*.tif*;*.gif*;*.bmp*', ...
+             ['All image files (*.png, *.PNG, *.jpe*, *.jpg*, ', ...
+             '*.tif*, *.gif*, *.bmp*)'];'*.*',  ...
+             'All files (*.*)'},'Please Select Image Files', ...
              'MultiSelect', 'on');
 %
 if isequal(fnams,0)
@@ -217,8 +232,10 @@ for k = 1:nf
 %
 % Plot Image
 %
-   im_dat = imread(fullfile(pnam,fnam));
-   ih = imagesc(im_dat);
+   im_dat = imread(fullfile(pnam,fnam));         % Image data
+   val = get(hs,'Value');              % Get brightness from slider
+   imgb = im_dat+uint8(val);           % Adjust brightness
+   ih = imagesc(imgb);  % Plot image
    axis equal;
    axis tight;
    hold on;
